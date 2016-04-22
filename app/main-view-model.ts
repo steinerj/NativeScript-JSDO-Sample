@@ -25,7 +25,7 @@ export class ViewModel extends Observable {
 
                 var jsdo = new JSDO({ name: "dsCustomer" });
 
-                jsdo.subscribe("AfterFill", (jsdo, success, request) => {
+                jsdo.subscribe("afterFill", (jsdo, success, request) => {
                     jsdo.eCustomer.foreach(customer => {
                         this._customers.push({ ID: customer.data.CustNum, Name: customer.data.Name })
                     });
