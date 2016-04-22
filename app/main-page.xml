@@ -1,0 +1,11 @@
+<Page loaded="pageLoaded">
+  <GridLayout>
+    <ListView items="{{ customers }}">
+        <ListView.itemTemplate>
+          <StackLayout>
+            <Label text="{{ 'ID: ' + ID + ', Name: ' + Name }}" />
+          </StackLayout>
+        </ListView.itemTemplate>
+     </ListView>
+  </GridLayout>
+</Page>
