@@ -2,12 +2,8 @@ lib/
 node_modules/
 platforms/
 hooks/
-app/App_Resources/**
 .vscode
 npm-debug.log
 *.js
 *.map
 !progress.jsdo.js
-!app/App_Resources/
-!app/App_Resources/iOS/
-!app/App_Resources/iOS/Info.plist
