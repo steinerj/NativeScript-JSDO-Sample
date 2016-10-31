@@ -1,18 +1,22 @@
 {
-	"nativescript": {
-		"id": "org.nativescript.sampleJSDO",
-		"tns-android": {
-			"version": "1.7.1"
-		},
-		"tns-ios": {
-			"version": "1.7.0"
-		}
-	},
-	"dependencies": {
-		"tns-core-modules": "1.7.1"
-	},
-	"devDependencies": {
-		"nativescript-dev-typescript": "^0.3.0",
-		"typescript": "^1.8.10"
-	}
+  "nativescript": {
+    "id": "org.nativescript.sampleJSDO",
+    "tns-android": {
+      "version": "2.3.0"
+    },
+    "tns-ios": {
+      "version": "1.7.0"
+    }
+  },
+  "dependencies": {
+    "tns-core-modules": "2.3.0"
+  },
+  "devDependencies": {
+    "babel-traverse": "6.18.0",
+    "babel-types": "6.18.0",
+    "babylon": "6.13.0",
+    "lazy": "1.0.11",
+    "nativescript-dev-typescript": "^0.3.2",
+    "typescript": "^2.0.3"
+  }
 }
