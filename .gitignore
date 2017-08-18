@@ -7,3 +7,4 @@ npm-debug.log
 *.js
 *.map
 !progress.jsdo.js
+!pwrapper.js
