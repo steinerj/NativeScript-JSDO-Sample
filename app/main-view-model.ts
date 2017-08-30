@@ -1,87 +1,47 @@
-import {Observable} from "data/observable";
-import {ObservableArray} from "data/observable-array";
+import { Observable } from "data/observable";
+import { ObservableArray } from "data/observable-array";
+import "./pwrapper.js";
+var progress = require("./progress.jsdo").progress;
 
-var deferred        = require("./pwrapper.js").deferred;
-var progress        = require("./progress.jsdo").progress;
-var Auth            = progress.data.AuthenticationProvider;
-var Session         = progress.data.JSDOSession;
-var JSDO            = progress.data.JSDO;
-var sessionStorage  = require("nativescript-localstorage");
+var sessionStorage = require("nativescript-localstorage");
 
 export class ViewModel extends Observable {
-    
+
     private _customers: ObservableArray<Customer>;
     get customers(): ObservableArray<Customer> {
         if (!this._customers) {
             this._customers = new ObservableArray<Customer>();
-            
-            var auth, 
-                session,
-                jsdo;   
-
-            let createAuthProvider = new Promise((resolve,reject) => {
-                    auth = new Auth({
-                    authenticationModel: progress.data.Session.AUTH_TYPE_ANON,
-                    uri: "http://oemobiledemo.progress.com/OEMobileDemoServices"
-                });
-                resolve(auth);
-            }); 
-            createAuthProvider.then((authProvider) => {
-                //auth = authProvider;
-                let doLogin = new Promise((resolve,reject) => {
-                    resolve(auth.login("",""));
-                });
-                doLogin.then((loginResult) => {
-                    var authP = loginResult[0];
-                    let createJSDOSession = new Promise((resolve,reject) => {
-                        session = new Session({
-                            authenticationModel: progress.data.Session.AUTH_TYPE_ANON, 
-                            serviceURI: "http://oemobiledemo.progress.com/OEMobileDemoServices",
-                            authProvider: authP
-                        });
-                        resolve(session); 
-                    });
-                    createJSDOSession.then((sessionResult) => {
-                        //session = sessionResult;
-                        let addCatalog = new Promise((resolve,reject) => {
-                            resolve(session.addCatalog("http://oemobiledemo.progress.com/OEMobileDemoServices/static/MobilityDemoService.json"));
-                        })
-                        addCatalog.then((session) => {
-                            let createJSDO = new Promise((resolve,reject) => {
-
-                                jsdo = new JSDO({ name: 'dsCustomer' });
-                                resolve(jsdo);
-                            })
-                            createJSDO.then((jsdoResult) => {
-                                jsdo.subscribe('AfterFill', onAfterFillCustomers, this);    
-                                jsdo.fill();    
-             
-                                function onAfterFillCustomers(jsdo, success, request) {
-                                    jsdo.eCustomer.foreach(customer => {
-                                        this._customers.push({ ID: customer.data.CustNum, Name: customer.data.Name });
-                                    });
-                                }
-                            })
-                            createJSDO.catch((error) => {
-                                console.log("create JSDO: ", error);
-                            })
-                        })
-                        addCatalog.catch((error) => {
-                            console.log("addCatalog: ", error);    
-                        });
-                    })    
-                    createJSDOSession.catch((error) => {
-                        console.log("createJSDOSession: ", error);
-                    });
+            progress.data.getSession({
+                    "serviceURI": 'http://oemobiledemo.progress.com/OEMobileDemoServicesForm',
+                    "catalogURI": 'http://oemobiledemo.progress.com/OEMobileDemoServicesForm/static/CustomerService.json',
+                    "authenticationModel": progress.data.Session.AUTH_TYPE_FORM,
+                    "authProviderAuthenticationModel": progress.data.Session.AUTH_TYPE_FORM,
+                    "authenticationURI": 'http://oemobiledemo.progress.com/OEMobileDemoServicesForm',
+                    "username": 'formuser',
+                    "password": 'formpassword',
+                    "name": 'Customer',
+                    //"serviceURI": 'http://oemobiledemo.progress.com/OEMobileDemoServices',
+                    //"catalogURI": 'http://oemobiledemo.progress.com/OEMobileDemoServices/static/MobilityDemoService.json',
+                    //"authenticationModel": progress.data.Session.AUTH_TYPE_ANON,
+                    //"authProviderAuthenticationModel": progress.data.Session.AUTH_TYPE_ANON,
+                    //"authenticationURI": 'http://oemobiledemo.progress.com/OEMobileDemoServices',
+                    //"username": '',
+                    //"password": '',
+                    //"name": 'Customer',
                 })
-                doLogin.catch((error) => {
-                    console.log("doLogin: ", error);
-                })
-            })
-            createAuthProvider.catch((error) => {
-                console.log("createAuthProvider: ", error);    
-            })    
-        }
+                .then((s, r, i) => {
+                    //let jsdo = new progress.data.JSDO({ name: 'dsCustomer' });
+                    let jsdo = new progress.data.JSDO({ name: 'Customer' });
+                    jsdo.fill();
+
+                    jsdo.subscribe('afterFill', (jsdoResult, success, request) => {                    
+                        //jsdoResult.eCustomer.foreach(customer => {
+                        jsdoResult.ttCustomer.foreach(customer => {
+                            this._customers.push({ ID: customer.data.CustNum, Name: customer.data.Name })
+                        })}
+                        , this); 
+                    });
+                }
         return this._customers;
     }
 }

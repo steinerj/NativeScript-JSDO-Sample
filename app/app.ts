@@ -5,6 +5,8 @@ purpose of the file is to pass control to the app’s first module.
 */
 
 import "./bundle-config";
+import "./pwrapper.js";
+
 import * as app from 'application';
 
 app.start({ moduleName: 'main-page' });
